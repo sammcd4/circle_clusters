@@ -1,4 +1,4 @@
-from circleclusters import Circle
+from circleclusters import Circle, CircleSet
 
 # construct flat list of c-tuples
 c_tuples = [
@@ -8,11 +8,13 @@ c_tuples = [
     (4.0, 4.0, 0.7),
 ]
 
+# construct all circles from c-tuples
+circles = CircleSet(c_tuples)
+
 # group the circles into clusters
-for c_tuple in c_tuples:
-    for c_tuple2 in c_tuples:
-        # one method is brute force
-        pass
+circles.group()
+print(circles.clusters())
+print(circles.largest())
 
 # for each cluster, determine the largest circle and return it
 

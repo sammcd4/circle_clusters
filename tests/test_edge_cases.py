@@ -3,6 +3,9 @@ import unittest
 
 class EdgeCases(unittest.TestCase):
 
+    def test_empty_list(self):
+        pass
+
     def test_identical_circles_in_cluster(self):
         pass
 
