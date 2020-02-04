@@ -7,6 +7,7 @@ class Circle:
         self._x = c_tuple[0]
         self._y = c_tuple[1]
         self._r = c_tuple[2]
+
         self.cluster = None
         self.largest = True
 
@@ -100,9 +101,9 @@ class CircleSet:
                 print(self.num_clusters)
                 # assign cluster number to each circle, if intersecting
 
-        # If last circle is not intersecting any other circles, create a new cluster for it
-        if self.circles[-1].cluster is None:
-            self.num_clusters = self.circles[-1].new_cluster(self.num_clusters)
+            # Assign cluster number if circle is not touching any others
+            if circle.cluster is None:
+                self.num_clusters = circle.new_cluster(self.num_clusters)
 
     def clusters(self):
         clusters = []
