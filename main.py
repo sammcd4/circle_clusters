@@ -8,7 +8,7 @@ if __name__ == '__main__':
 
     if read_from_file:
 
-        filename = 'tests/input/example3.txt'
+        filename = 'tests/input/order_complex.txt'
         c_tuples = c_tuples_from_file(filename)
 
     else:

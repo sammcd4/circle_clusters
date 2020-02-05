@@ -82,6 +82,7 @@ class Circle:
         elif self.largestCircle is not None:
             # save on more iteration by storing largest circle and comparing to it directly
             self.largestCircle.compare_radius(circle2)
+            circle2.compare_radius(self.largestCircle)
 
 
 class CircleSet:
@@ -176,13 +177,14 @@ def compute_largest_of_clusters(c_tuples):
 
     # group the circles into clusters
     circles.group()
-    print(circles.clusters())
-    print(circles.largest())
-
-    cl = circles.clusters()
-    lg = circles.largest()
+    #print(circles.clusters())
+    #print(circles.largest())
 
     if False:
+
+        cl = circles.clusters()
+        lg = circles.largest()
+
         fig, ax = plt.subplots()
         ax.set_xlim((0, 10))
         ax.set_ylim((0, 10))
