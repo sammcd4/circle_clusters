@@ -20,7 +20,7 @@ class EdgeCases(CircleTestCase):
     def test_identical_tangent_circles(self):
         c_tuples = [(1.0, 1.0, 1.0),
                     (3.0, 1.0, 1.0)]
-        #self.verify_largest_of_clusters_algorithm(c_tuples, [c_tuples[0]])
+        self.verify_largest_of_clusters_algorithm(c_tuples, [c_tuples[0]])
 
     def test_nested_circles(self):
         pass

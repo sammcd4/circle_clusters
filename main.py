@@ -8,20 +8,11 @@ if __name__ == '__main__':
     if read_from_file:
 
         filename = 'tests/input/example1.txt'
-        coordinates = c_tuples_from_file(filename)
+        c_tuples = c_tuples_from_file(filename)
 
     else:
-        coordinates = [
-            (0.5, 0.5, 0.5),
-            (0.5, 0.5, 0.5),
-            (0.5, 0.5, 0.5),
-            (0.5, 0.5, 0.5),
-            (0.5, 0.5, 0.5),
-            (0.5, 0.5, 0.5),
-            (0.5, 0.5, 0.5),
-            (0.5, 0.5, 0.5),
-            (0.5, 0.5, 0.4),
-            (0.5, 0.5, 0.1),
-        ]
+        c_tuples = [(1.0, 1.0, 1.0),
+                    (3.0, 1.0, 1.0),
+                    (5.0, 1.0, 1.0)]
 
-    compute_largest_of_clusters(coordinates)
+    compute_largest_of_clusters(c_tuples)

@@ -11,10 +11,10 @@ class CircleTestCase(unittest.TestCase):
         self.verify_largest_of_clusters_algorithm(c_tuples, expected_output)
 
     def verify_largest_of_clusters_algorithm(self, c_tuples, expected_output):
-        output = compute_largest_of_clusters(c_tuples)
+        actual_output = compute_largest_of_clusters(c_tuples)
 
-        self.assertEqual(output, expected_output, 'Baseline mismatch')
+        self.assertEqual(expected_output, actual_output, 'Baseline mismatch')
 
     def verify_c_tuple_fileread(self, filename, expected_output):
         c_tuples = c_tuples_from_file('input/' + filename)
-        self.assertEqual(c_tuples, expected_output)
+        self.assertEqual(expected_output, c_tuples)
