@@ -1,4 +1,5 @@
 from math import sqrt
+import matplotlib.pyplot as plt
 
 
 class Circle:
@@ -11,6 +12,7 @@ class Circle:
         self.cluster = None
         self.largest = True
         self.largestCircle = None
+        self.intersecting_circles = []
 
     def __eq__(self, other):
         if self.c_tuple == other.c_tuple:
@@ -29,6 +31,10 @@ class Circle:
     @property
     def y(self):
         return self._c_tuple[1]
+
+    @property
+    def xy(self):
+        return self.x, self.y
 
     @property
     def r(self):
@@ -80,7 +86,6 @@ class Circle:
 
 class CircleSet:
 
-    # Algorithm options can be supplied
     def __init__(self, c_tuples):
         # Create a list of circles from list of c-tuples
         self.circles = []
@@ -88,6 +93,9 @@ class CircleSet:
             self.circles.append(Circle(c_tuple))
 
         self.num_clusters = 0
+
+    def get_circle(self, idx):
+        return self.circles[idx]
 
     def update_cluster_info(self, c1, c2):
         interaction = c1.get_interaction(c2)
@@ -126,8 +134,12 @@ class CircleSet:
     def group(self):
         # Group circles in clusters and determine largest circle within each
         for i, circle in enumerate(self.circles):
-            for j in range(0, i):  # iterate over previously updated circles to ensure cluster info updates
+            for j in range(i+1, len(self.circles)):
                 circle2 = self.circles[j]
+
+                # if intersecting, add circle2 to circle's list
+                #if circle.get_interaction(circle2) == 'interaction':
+                #    circle.intersecting_circles.append(circle2)
 
                 # get interaction between two circles and update cluster information
                 self.update_cluster_info(circle, circle2)
@@ -164,8 +176,27 @@ def compute_largest_of_clusters(c_tuples):
 
     # group the circles into clusters
     circles.group()
-    #print(circles.clusters())
-    #print(circles.largest())
+    print(circles.clusters())
+    print(circles.largest())
+
+    cl = circles.clusters()
+    lg = circles.largest()
+
+    if False:
+        fig, ax = plt.subplots()
+        ax.set_xlim((0, 10))
+        ax.set_ylim((0, 10))
+
+        for i, c in enumerate(cl):
+            circle = circles.get_circle(i)
+            if lg[i]:
+                color = 'blue'
+            else:
+                color = 'red'
+            circle = plt.Circle(circle.xy, circle.r, color=color, fill=False)
+            ax.add_artist(circle)
+            fig.savefig('plotcircles.png')
+
 
     return circles.largest_of_clusters()
 
