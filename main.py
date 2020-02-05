@@ -3,7 +3,7 @@ from circleclusters import coordinates_from_file, compute_largest_of_clusters
 
 if __name__ == '__main__':
 
-    read_from_file = True
+    read_from_file = False
 
     if read_from_file:
 
@@ -13,9 +13,15 @@ if __name__ == '__main__':
     else:
         coordinates = [
             (0.5, 0.5, 0.5),
-            (1.5, 1.5, 1.1),
-            (0.7, 0.7, 0.4),
-            (4.0, 4.0, 0.7),
+            (0.5, 0.5, 0.5),
+            (0.5, 0.5, 0.5),
+            (0.5, 0.5, 0.5),
+            (0.5, 0.5, 0.5),
+            (0.5, 0.5, 0.5),
+            (0.5, 0.5, 0.5),
+            (0.5, 0.5, 0.5),
+            (0.5, 0.5, 0.4),
+            (0.5, 0.5, 0.1),
         ]
 
     compute_largest_of_clusters(coordinates)

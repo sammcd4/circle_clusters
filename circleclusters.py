@@ -10,6 +10,12 @@ class Circle:
         self.largest = True
         self.largestCircle = None
 
+    def __eq__(self, other):
+        if self.c_tuple == other.c_tuple:
+            return True
+        else:
+            return False
+
     @property
     def c_tuple(self):
         return self._c_tuple
@@ -29,8 +35,6 @@ class Circle:
     def new_cluster(self, num_clusters):
         num_clusters += 1
         self.cluster = num_clusters
-        print('Assigned circle to new cluster {}'.format(num_clusters))
-
         return num_clusters
 
     def get_interaction(self, circle2, num_clusters):
@@ -48,6 +52,7 @@ class Circle:
         elif d + smallest_r < largest_r:
             # circles are nested
             print('nested circles')
+            # TODO: identical circles get caught here
         else:
             # circles are intersecting, so update cluster states
             print('circles are intersecting')
@@ -70,7 +75,7 @@ class Circle:
 
 
             # compute largest circle by comparing radii
-            self.compare_radius(circle2)
+            self.compare_radius(circle2, True)
             circle2.compare_radius(self)
 
 
@@ -78,7 +83,7 @@ class Circle:
 
         return num_clusters
 
-    def compare_radius(self, circle2):
+    def compare_radius(self, circle2, check_identical=False):
         # prove that this circle is not the largest
 
         # only compare size within the same cluster
@@ -86,15 +91,19 @@ class Circle:
             return
 
         if self.largest:
+
+            # circles of different radii
             if circle2.r > self.r:
                 self.largest = False
+                self.largestCircle = circle2
 
-                # save largest circle for else condition below
+            # circles of identical radii
+            if check_identical and self == circle2:
+                self.largest = False
                 self.largestCircle = circle2
 
         elif self.largestCircle is not None:
             self.largestCircle.compare_radius(circle2)
-
 
 
 class CircleSet:
@@ -140,17 +149,6 @@ class CircleSet:
                 largest_of_clusters.append(circle.c_tuple)
         return largest_of_clusters
 
-class Cluster:
-
-    def __init__(self, circles):
-        self._circles = circles
-        self.compute_largest_circle()
-
-    def compute_largest_circle(self):
-        # compute the largest circle in the set of circles
-        for circle in self.circles:
-            pass
-
 
 def compute_largest_of_clusters(c_tuples):
 
@@ -165,11 +163,11 @@ def compute_largest_of_clusters(c_tuples):
     return circles.largest_of_clusters()
 
 
-def coordinates_from_file(filename):
-    coordinates = []
+def c_tuples_from_file(filename):
+    c_tuples = []
     with open(filename, 'r') as f:
         for line in f:
             current = line.split(',')
-            coordinates.append((float(current[0]), float(current[1]), float(current[2])))
+            c_tuples.append((float(current[0]), float(current[1]), float(current[2])))
 
-    return coordinates
+    return c_tuples

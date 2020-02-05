@@ -1,16 +1,21 @@
-import unittest
+from circletesttools import CircleTestCase
 
 
-class EdgeCases(unittest.TestCase):
+class EdgeCases(CircleTestCase):
 
     def test_empty_list(self):
-        pass
+        self.verify_largest_of_clusters_algorithm([], [])
 
     def test_identical_circles_in_cluster(self):
-        pass
+        c_tuples = [(1.0, 1.0, 0.5),
+                    (1.0, 1.0, 0.5),
+                    (1.0, 1.0, 0.5)]
+        self.verify_largest_of_clusters_algorithm(c_tuples, [c_tuples[0]])
 
     def test_tangent_circles(self):
-        pass
+        c_tuples = [(1.0, 1.0, 1.0),
+                    (2.5, 1.0, 0.5)]
+        self.verify_largest_of_clusters_algorithm(c_tuples, [c_tuples[0]])
 
     def test_identical_tangent_circles(self):
         pass
