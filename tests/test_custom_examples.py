@@ -12,7 +12,7 @@ class CustomExamples(CircleTestCase):
                     ]
         self.verify_largest_of_clusters_algorithm(c_tuples, c_tuples[0:2])
 
-    def test_all_apart(self):
+    def test_non_intersecting(self):
         c_tuples = [(1.0, 1.0, 0.4),
                     (10.0, 10.0, 0.6),
                     (75.0, 11.0, 0.7),
@@ -26,23 +26,17 @@ class CustomExamples(CircleTestCase):
 
     def test_order_simple(self):
         filename = 'order_simple.txt'
-        c_tuples = c_tuples_from_file('input/' + filename)
-        expected_output = c_tuples_from_file('baseline_output/' + filename)
-
-        self.verify_largest_of_clusters_algorithm(c_tuples, expected_output)
+        self.verify_largest_of_clusters_algorithm_from_file(filename)
 
     def test_order_complex(self):
         filename = 'order_complex.txt'
-        c_tuples = c_tuples_from_file('input/' + filename)
-        expected_output = c_tuples_from_file('baseline_output/' + filename)
-
-        self.verify_largest_of_clusters_algorithm(c_tuples, expected_output)
+        self.verify_largest_of_clusters_algorithm_from_file(filename)
 
     def test_large_set(self):
         filename = 'large_set.txt'
-        c_tuples = c_tuples_from_file('input/' + filename)
-        expected_output = c_tuples_from_file('baseline_output/' + filename)
+        self.verify_largest_of_clusters_algorithm_from_file(filename)
 
-        #self.verify_largest_of_clusters_algorithm(c_tuples, expected_output)
-
+    def test_large_set2(self):
+        filename = 'large_set2.txt'
+        self.verify_largest_of_clusters_algorithm_from_file(filename)
 

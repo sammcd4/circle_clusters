@@ -1,5 +1,5 @@
 from math import sqrt
-import matplotlib.pyplot as plt
+
 
 # Circle class for computing and managing interaction between other circles
 class Circle:
@@ -70,7 +70,7 @@ class Circle:
             return 'intersecting'
 
     def compare_radius(self, circle2):
-        # compare radius of another circle to determine which is largest
+        # compare radius to another circle to determine which is largest
 
         # only compare size within the same cluster
         if self.cluster != circle2.cluster:
@@ -101,31 +101,6 @@ class CircleSet:
     def get_circle(self, idx):
         return self.circles[idx]
 
-    def update_cluster_info_impl(self, c1, c2):
-        #interaction = c1.get_interaction(c2)
-
-        # circles are intersecting, so update cluster states
-        if c1.cluster is None and c2.cluster is None:
-            # new cluster for each circle
-            self.num_clusters = c1.new_cluster(self.num_clusters)
-            c2.cluster = c1.cluster
-
-        elif c1.cluster is None:
-            # circle 2 is part of a cluster
-            c1.cluster = c2.cluster
-
-        elif c2.cluster is None:
-            # I am part of a cluster
-            c2.cluster = c1.cluster
-
-        elif c1.cluster != c2.cluster:
-            # Both clusters already have a cluster
-            print('Conflicting logic: Intersecting circles with different clusters!')
-
-        # compute largest circle by comparing radii
-        c1.compare_radius(c2)
-        c2.compare_radius(c1)
-
     def update_cluster_info(self, circle):
 
         existing_cluster = None
@@ -139,7 +114,8 @@ class CircleSet:
                 if existing_cluster is None:
                     existing_cluster = c.cluster
                 elif c.cluster != existing_cluster:
-                    print('Conflicting logic: Intersecting circles with different clusters!')
+                    # choose lowest cluster value
+                    existing_cluster = min(c.cluster, existing_cluster)
 
         # if truly no existing cluster, then create one
         if existing_cluster is None:
@@ -152,7 +128,7 @@ class CircleSet:
         for c in circle.intersecting_circles:
             c.cluster = existing_cluster
 
-            # compute largest circle by comparing radius
+            # compute largest circle within cluster
             circle.compare_radius(c)
             c.compare_radius(circle)
 
@@ -167,12 +143,6 @@ class CircleSet:
 
             # found all intersecting circles with circle, so update cluster information
             self.update_cluster_info(circle)
-                # get interaction between two circles and update cluster information
-                #self.update_cluster_info(circle, circle2)
-
-            # Assign cluster number if circle is not touching any others
-            #if circle.cluster is None:
-            #    self.num_clusters = circle.new_cluster(self.num_clusters)
 
     def clusters(self):
         return [circle.cluster for circle in self.circles]
@@ -196,25 +166,6 @@ def compute_largest_of_clusters(c_tuples):
 
     # group the circles into clusters
     circles.group()
-
-    if False:
-
-        cl = circles.clusters()
-        lg = circles.largest()
-
-        fig, ax = plt.subplots()
-        ax.set_xlim((0, 10))
-        ax.set_ylim((0, 10))
-
-        for i, c in enumerate(cl):
-            circle = circles.get_circle(i)
-            if lg[i]:
-                color = 'blue'
-            else:
-                color = 'red'
-            circle = plt.Circle(circle.xy, circle.r, color=color, fill=False)
-            ax.add_artist(circle)
-            fig.savefig('plotcircles.png')
 
     return circles.largest_of_clusters()
 
