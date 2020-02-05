@@ -8,7 +8,7 @@ if __name__ == '__main__':
 
     if read_from_file:
 
-        filename = 'tests/input/order_complex.txt'
+        filename = 'tests/input/large_set.txt'
         c_tuples = c_tuples_from_file(filename)
 
     else:
@@ -17,7 +17,7 @@ if __name__ == '__main__':
                     (5.8, 7.0, 0.5),
                     (0.8, 0.7, 0.6)]
 
-    c_tuples.reverse()
+    #c_tuples.reverse()
     print(c_tuples)
     output = compute_largest_of_clusters(c_tuples)
     print(output)

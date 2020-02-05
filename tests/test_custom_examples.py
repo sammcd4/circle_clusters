@@ -31,17 +31,6 @@ class CustomExamples(CircleTestCase):
 
         self.verify_largest_of_clusters_algorithm(c_tuples, expected_output)
 
-    def test_order_simple_reversed(self):
-        filename = 'order_simple.txt'
-        c_tuples = c_tuples_from_file('input/' + filename)
-        expected_output = c_tuples_from_file('baseline_output/' + filename)
-
-        # reversed list should not affect algorithm
-        c_tuples.reverse()
-        expected_output.reverse()
-
-        self.verify_largest_of_clusters_algorithm(c_tuples, expected_output)
-
     def test_order_complex(self):
         filename = 'order_complex.txt'
         c_tuples = c_tuples_from_file('input/' + filename)
@@ -49,26 +38,11 @@ class CustomExamples(CircleTestCase):
 
         self.verify_largest_of_clusters_algorithm(c_tuples, expected_output)
 
-    def test_order_complex_reversed(self):
-        filename = 'order_complex.txt'
+    def test_large_set(self):
+        filename = 'large_set.txt'
         c_tuples = c_tuples_from_file('input/' + filename)
         expected_output = c_tuples_from_file('baseline_output/' + filename)
 
-        # reversed list should not affect algorithm
-        c_tuples.reverse()
-        expected_output.reverse()
-
-        self.verify_largest_of_clusters_algorithm(c_tuples, expected_output)
-
-    def test_order_example3_reversed(self):
-        filename = 'example3.txt'
-        c_tuples = c_tuples_from_file('input/' + filename)
-        expected_output = c_tuples_from_file('baseline_output/' + filename)
-
-        # reversed list should not affect algorithm
-        c_tuples.reverse()
-        expected_output.reverse()
-
-        self.verify_largest_of_clusters_algorithm(c_tuples, expected_output)
+        #self.verify_largest_of_clusters_algorithm(c_tuples, expected_output)
 
 

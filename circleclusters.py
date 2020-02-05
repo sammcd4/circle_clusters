@@ -1,7 +1,7 @@
 from math import sqrt
 import matplotlib.pyplot as plt
 
-
+# Circle class for computing and managing interaction between other circles
 class Circle:
 
     def __init__(self, c_tuple):
@@ -62,6 +62,11 @@ class Circle:
             return 'nested'
         else:
             # circles are intersecting, forming a cluster
+
+            # take note of connected circles
+            self.intersecting_circles.append(circle2)
+            circle2.intersecting_circles.append(self)
+
             return 'intersecting'
 
     def compare_radius(self, circle2):
@@ -85,52 +90,71 @@ class Circle:
             circle2.compare_radius(self.largestCircle)
 
 
+# Class that maintains the c-tuple order and facilitates operations between circles
 class CircleSet:
 
     def __init__(self, c_tuples):
         # Create a list of circles from list of c-tuples
-        self.circles = []
-        for c_tuple in c_tuples:
-            self.circles.append(Circle(c_tuple))
-
+        self.circles = [Circle(c_tuple) for c_tuple in c_tuples]
         self.num_clusters = 0
 
     def get_circle(self, idx):
         return self.circles[idx]
 
-    def update_cluster_info(self, c1, c2):
-        interaction = c1.get_interaction(c2)
+    def update_cluster_info_impl(self, c1, c2):
+        #interaction = c1.get_interaction(c2)
 
-        if interaction == 'none':
-            # circles are not intersecting or nested
-            pass
+        # circles are intersecting, so update cluster states
+        if c1.cluster is None and c2.cluster is None:
+            # new cluster for each circle
+            self.num_clusters = c1.new_cluster(self.num_clusters)
+            c2.cluster = c1.cluster
 
-        elif interaction == 'nested':
-            # circles are nested
-            pass
+        elif c1.cluster is None:
+            # circle 2 is part of a cluster
+            c1.cluster = c2.cluster
 
-        elif interaction == 'intersecting':
-            # circles are intersecting, so update cluster states
-            if c1.cluster is None and c2.cluster is None:
-                # new cluster for each circle
-                self.num_clusters = c1.new_cluster(self.num_clusters)
-                c2.cluster = c1.cluster
+        elif c2.cluster is None:
+            # I am part of a cluster
+            c2.cluster = c1.cluster
 
-            elif c1.cluster is None:
-                # circle 2 is part of a cluster
-                c1.cluster = c2.cluster
+        elif c1.cluster != c2.cluster:
+            # Both clusters already have a cluster
+            print('Conflicting logic: Intersecting circles with different clusters!')
 
-            elif c2.cluster is None:
-                # I am part of a cluster
-                c2.cluster = c1.cluster
+        # compute largest circle by comparing radii
+        c1.compare_radius(c2)
+        c2.compare_radius(c1)
 
-            elif c1.cluster != c2.cluster:
-                # Both clusters already have a cluster
-                print('Conflicting logic: Intersecting circles with different clusters!')
+    def update_cluster_info(self, circle):
 
-            # compute largest circle by comparing radii
-            c1.compare_radius(c2)
-            c2.compare_radius(c1)
+        existing_cluster = None
+
+        if circle.cluster is not None:
+            existing_cluster = circle.cluster
+
+        # loop over circles in cluster to determine the correct cluster number
+        for c in circle.intersecting_circles:
+            if c.cluster is not None:
+                if existing_cluster is None:
+                    existing_cluster = c.cluster
+                elif c.cluster != existing_cluster:
+                    print('Conflicting logic: Intersecting circles with different clusters!')
+
+        # if truly no existing cluster, then create one
+        if existing_cluster is None:
+            # start a new cluster
+            self.num_clusters = circle.new_cluster(self.num_clusters)
+            existing_cluster = circle.cluster
+
+        # update all circles to the existing cluster
+        circle.cluster = existing_cluster
+        for c in circle.intersecting_circles:
+            c.cluster = existing_cluster
+
+            # compute largest circle by comparing radius
+            circle.compare_radius(c)
+            c.compare_radius(circle)
 
     def group(self):
         # Group circles in clusters and determine largest circle within each
@@ -138,28 +162,23 @@ class CircleSet:
             for j in range(i+1, len(self.circles)):
                 circle2 = self.circles[j]
 
-                # if intersecting, add circle2 to circle's list
-                #if circle.get_interaction(circle2) == 'interaction':
-                #    circle.intersecting_circles.append(circle2)
+                # if intersecting, log self in each other's intersecting_circles list
+                circle.get_interaction(circle2)
 
+            # found all intersecting circles with circle, so update cluster information
+            self.update_cluster_info(circle)
                 # get interaction between two circles and update cluster information
-                self.update_cluster_info(circle, circle2)
+                #self.update_cluster_info(circle, circle2)
 
             # Assign cluster number if circle is not touching any others
-            if circle.cluster is None:
-                self.num_clusters = circle.new_cluster(self.num_clusters)
+            #if circle.cluster is None:
+            #    self.num_clusters = circle.new_cluster(self.num_clusters)
 
     def clusters(self):
-        clusters = []
-        for circle in self.circles:
-            clusters.append(circle.cluster)
-        return clusters
+        return [circle.cluster for circle in self.circles]
 
     def largest(self):
-        largest = []
-        for circle in self.circles:
-            largest.append(circle.largest)
-        return largest
+        return [circle.largest for circle in self.circles]
 
     def largest_of_clusters(self):
         largest_of_clusters = []
@@ -177,8 +196,6 @@ def compute_largest_of_clusters(c_tuples):
 
     # group the circles into clusters
     circles.group()
-    #print(circles.clusters())
-    #print(circles.largest())
 
     if False:
 
@@ -199,10 +216,10 @@ def compute_largest_of_clusters(c_tuples):
             ax.add_artist(circle)
             fig.savefig('plotcircles.png')
 
-
     return circles.largest_of_clusters()
 
 
+# import a comma-separated list from a file
 def c_tuples_from_file(filename):
     c_tuples = []
     with open(filename, 'r') as f:
