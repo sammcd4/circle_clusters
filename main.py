@@ -1,4 +1,4 @@
-from circleclusters import coordinates_from_file, compute_largest_of_clusters
+from circleclusters import c_tuples_from_file, compute_largest_of_clusters
 
 
 if __name__ == '__main__':
@@ -8,7 +8,7 @@ if __name__ == '__main__':
     if read_from_file:
 
         filename = 'tests/input/example1.txt'
-        coordinates = coordinates_from_file(filename)
+        coordinates = c_tuples_from_file(filename)
 
     else:
         coordinates = [

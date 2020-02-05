@@ -37,7 +37,7 @@ class Circle:
         self.cluster = num_clusters
         return num_clusters
 
-    def get_interaction(self, circle2, num_clusters):
+    def get_interaction(self, circle2):
         x2 = circle2.x
         y2 = circle2.y
         r2 = circle2.r
@@ -49,39 +49,14 @@ class Circle:
         if d > abs(self.r + r2):
             # circles are not intersecting or nested
             print('circles are not touching')
+            return 'none'
         elif d + smallest_r < largest_r:
             # circles are nested
             print('nested circles')
             # TODO: identical circles get caught here
+            return 'nested'
         else:
-            # circles are intersecting, so update cluster states
-            print('circles are intersecting')
-            if self.cluster is None and circle2.cluster is None:
-                # new cluster for each circle
-                num_clusters = self.new_cluster(num_clusters)
-                circle2.cluster = self.cluster
-
-            elif self.cluster is None:
-                # circle 2 is part of a cluster
-                self.cluster = circle2.cluster
-
-            elif circle2.cluster is None:
-                # I am part of a cluster
-                circle2.cluster = self.cluster
-
-            elif self.cluster != circle2.cluster:
-                # Both clusters already have a cluster
-                print('Conflicting logic: Intersecting circles with different clusters!')
-
-
-            # compute largest circle by comparing radii
-            self.compare_radius(circle2, True)
-            circle2.compare_radius(self)
-
-
-            #self.commpare_radius()
-
-        return num_clusters
+            return 'intersecting'
 
     def compare_radius(self, circle2, check_identical=False):
         # prove that this circle is not the largest
@@ -116,6 +91,42 @@ class CircleSet:
 
         self.num_clusters = 0
 
+    def update_cluster_info(self, c1, c2):
+        interaction = c1.get_interaction(c2)
+
+        if interaction == 'none':
+            # circles are not intersecting or nested
+            pass
+
+        elif interaction == 'nested':
+            # circles are nested
+            pass
+
+        elif interaction == 'intersecting':
+            # circles are intersecting, so update cluster states
+            print('circles are intersecting')
+            if c1.cluster is None and c2.cluster is None:
+                # new cluster for each circle
+                self.num_clusters = c1.new_cluster(self.num_clusters)
+                c2.cluster = c1.cluster
+
+            elif c1.cluster is None:
+                # circle 2 is part of a cluster
+                c1.cluster = c2.cluster
+
+            elif c2.cluster is None:
+                # I am part of a cluster
+                c2.cluster = c1.cluster
+
+            elif c1.cluster != c2.cluster:
+                # Both clusters already have a cluster
+                print('Conflicting logic: Intersecting circles with different clusters!')
+
+
+            # compute largest circle by comparing radii, throwing out any identical circles
+            c1.compare_radius(c2, True)
+            c2.compare_radius(c1)
+
     def group(self):
         # Group circles in clusters and determine largest circle within each
         for i, circle in enumerate(self.circles):
@@ -124,7 +135,7 @@ class CircleSet:
                 circle2 = self.circles[j]
 
                 # get interaction between two circles and update cluster information
-                self.num_clusters = circle.get_interaction(circle2, self.num_clusters)
+                self.update_cluster_info(circle, circle2);
 
             # Assign cluster number if circle is not touching any others
             if circle.cluster is None:
