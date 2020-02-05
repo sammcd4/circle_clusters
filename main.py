@@ -11,8 +11,8 @@ if __name__ == '__main__':
         c_tuples = c_tuples_from_file(filename)
 
     else:
-        c_tuples = [(1.0, 1.0, 1.0),
-                    (3.0, 1.0, 1.0),
-                    (5.0, 1.0, 1.0)]
+        c_tuples = [(1.0, 1.0, 0.5),
+                    (1.0, 1.0, 0.5),
+                    (1.0, 1.0, 0.5)]
 
-    compute_largest_of_clusters(c_tuples)
+    compute_largest_of_clusters(c_tuples, remove_identical_circles=True)

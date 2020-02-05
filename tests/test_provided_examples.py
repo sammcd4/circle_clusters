@@ -1,6 +1,7 @@
 from circletesttools import CircleTestCase
 
 
+# test cases for the provided examples in the assignment
 class ProvidedExamples(CircleTestCase):
 
     def test_two_clusters(self):

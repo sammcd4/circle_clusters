@@ -6,6 +6,8 @@ class Circle:
     def __init__(self, c_tuple):
         self._c_tuple = c_tuple
 
+        assert self.r > 0, 'Radius must be greater than zero'
+
         self.cluster = None
         self.largest = True
         self.largestCircle = None
@@ -78,7 +80,7 @@ class Circle:
             # circles of identical radius
             if check_equal_radius and self.r == circle2.r:
                 # create arbitrary conditions for removal of circle1
-                if self.x >= circle2.x or self.y >= circle2.y:
+                if self.x > circle2.x or self.y > circle2.y:
                     handoff_largest_status = True
 
             # circles of identical radius and location
@@ -93,19 +95,20 @@ class Circle:
         elif self.largestCircle is not None:
             self.largestCircle.compare_radius(circle2)
 
-    def assign_largest_status_to(self, circle2):
-        self.largest = False
-        self.largestCircle = circle2
 
 class CircleSet:
 
-    def __init__(self, c_tuples):
+    # Algorithm options can be supplied
+    def __init__(self, c_tuples, remove_equal_area_circles=True, remove_identical_circles=True):
         # Create a list of circles from list of c-tuples
         self.circles = []
         for c_tuple in c_tuples:
             self.circles.append(Circle(c_tuple))
 
         self.num_clusters = 0
+
+        self.remove_identical_circles = remove_identical_circles
+        self.remove_equal_area_circles = remove_equal_area_circles
 
     def update_cluster_info(self, c1, c2):
         interaction = c1.get_interaction(c2)
@@ -137,13 +140,8 @@ class CircleSet:
                 # Both clusters already have a cluster
                 print('Conflicting logic: Intersecting circles with different clusters!')
 
-
-            # Assumptions to move to CircleSet class as config settings
-            remove_identical_circles = True
-            remove_equal_area_circles = True
-
-            # compute largest circle by comparing radii, throwing out any identical circles
-            c1.compare_radius(c2, remove_equal_area_circles, remove_identical_circles)
+            # compute largest circle by comparing radii, applying algorithm settings to only one circle of a pair
+            c1.compare_radius(c2, self.remove_equal_area_circles, self.remove_identical_circles)
             c2.compare_radius(c1)
 
     def group(self):
@@ -154,7 +152,7 @@ class CircleSet:
                 circle2 = self.circles[j]
 
                 # get interaction between two circles and update cluster information
-                self.update_cluster_info(circle, circle2);
+                self.update_cluster_info(circle, circle2)
 
             # Assign cluster number if circle is not touching any others
             if circle.cluster is None:
@@ -180,10 +178,11 @@ class CircleSet:
         return largest_of_clusters
 
 
-def compute_largest_of_clusters(c_tuples):
+# entry point to run algorithm
+def compute_largest_of_clusters(c_tuples, *args, **kwargs):
 
     # construct all circles from c-tuples
-    circles = CircleSet(c_tuples)
+    circles = CircleSet(c_tuples, *args, **kwargs)
 
     # group the circles into clusters
     circles.group()
