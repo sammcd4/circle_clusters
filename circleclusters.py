@@ -50,18 +50,15 @@ class Circle:
 
         if d > abs(self.r + r2):
             # circles are not intersecting or nested
-            print('circles are not touching')
             return 'none'
         elif d + smallest_r < largest_r:
             # circles are nested
-            print('nested circles')
-            # TODO: identical circles get caught here
             return 'nested'
         else:
-            print('circles are intersecting')
+            # circles are intersecting, forming a cluster
             return 'intersecting'
 
-    def compare_radius(self, circle2, check_equal_radius=False, check_identical=False):
+    def compare_radius(self, circle2):
         # compare radius of another circle to determine which is largest
 
         # only compare size within the same cluster
@@ -71,44 +68,26 @@ class Circle:
         if self.largest:
             # prove that this circle is not the largest
 
-            handoff_largest_status = False
-
             # circles of different radius
             if circle2.r > self.r:
-                handoff_largest_status = True
-
-            # circles of identical radius
-            if check_equal_radius and self.r == circle2.r:
-                # create arbitrary conditions for removal of circle1
-                if self.x > circle2.x or self.y > circle2.y:
-                    handoff_largest_status = True
-
-            # circles of identical radius and location
-            if check_identical and self == circle2:
-                handoff_largest_status = True
-
-
-            if handoff_largest_status:
                 self.largest = False
                 self.largestCircle = circle2
 
         elif self.largestCircle is not None:
+            # save on more iteration by storing largest circle and comparing to it directly
             self.largestCircle.compare_radius(circle2)
 
 
 class CircleSet:
 
     # Algorithm options can be supplied
-    def __init__(self, c_tuples, remove_equal_area_circles=True, remove_identical_circles=True):
+    def __init__(self, c_tuples):
         # Create a list of circles from list of c-tuples
         self.circles = []
         for c_tuple in c_tuples:
             self.circles.append(Circle(c_tuple))
 
         self.num_clusters = 0
-
-        self.remove_identical_circles = remove_identical_circles
-        self.remove_equal_area_circles = remove_equal_area_circles
 
     def update_cluster_info(self, c1, c2):
         interaction = c1.get_interaction(c2)
@@ -140,15 +119,14 @@ class CircleSet:
                 # Both clusters already have a cluster
                 print('Conflicting logic: Intersecting circles with different clusters!')
 
-            # compute largest circle by comparing radii, applying algorithm settings to only one circle of a pair
-            c1.compare_radius(c2, self.remove_equal_area_circles, self.remove_identical_circles)
+            # compute largest circle by comparing radii
+            c1.compare_radius(c2)
             c2.compare_radius(c1)
 
     def group(self):
         # Group circles in clusters and determine largest circle within each
         for i, circle in enumerate(self.circles):
             for j in range(0, i):  # iterate over previously updated circles to ensure cluster info updates
-                print('Get interaction between circles {} and {}'.format(i, j))
                 circle2 = self.circles[j]
 
                 # get interaction between two circles and update cluster information
@@ -179,15 +157,15 @@ class CircleSet:
 
 
 # entry point to run algorithm
-def compute_largest_of_clusters(c_tuples, *args, **kwargs):
+def compute_largest_of_clusters(c_tuples):
 
     # construct all circles from c-tuples
-    circles = CircleSet(c_tuples, *args, **kwargs)
+    circles = CircleSet(c_tuples)
 
     # group the circles into clusters
     circles.group()
-    print(circles.clusters())
-    print(circles.largest())
+    #print(circles.clusters())
+    #print(circles.largest())
 
     return circles.largest_of_clusters()
 

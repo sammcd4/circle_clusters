@@ -13,15 +13,16 @@ class CustomExamples(CircleTestCase):
         self.assertTrue('Radius must be greater than zero', str(context.exception))
 
     def test_signed(self):
-        c_tuples = [(-1.0, 1.0, 0.5),
+        c_tuples = [(-1.5, 1.0, 0.6),
                     (1.0, 1.0, 0.5),
-                    (1.0, 1.0, 0.5)]
+                    (-1.0, 1.0, 0.4)
+                    ]
         self.verify_largest_of_clusters_algorithm(c_tuples, c_tuples[0:2])
 
     def test_all_apart(self):
-        c_tuples = [(1.0, 1.0, 0.5),
-                    (10.0, 10.0, 0.5),
-                    (75.0, 11.0, 0.5),
+        c_tuples = [(1.0, 1.0, 0.4),
+                    (10.0, 10.0, 0.6),
+                    (75.0, 11.0, 0.7),
                     (100.0, 4.0, 5.0)]
         self.verify_largest_of_clusters_algorithm(c_tuples, c_tuples)
 
