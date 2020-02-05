@@ -1,13 +1,16 @@
-import unittest
+from circletesttools import CircleTestCase
 
 
-class ProvidedExamples(unittest.TestCase):
+class ProvidedExamples(CircleTestCase):
 
     def test_two_clusters(self):
-        pass
+        filename = 'example1.txt'
+        self.verify_largest_of_clusters_algorithm(filename)
 
     def test_no_clusters_touching(self):
-        pass
+        filename = 'example2.txt'
+        self.verify_largest_of_clusters_algorithm(filename)
 
     def test_all_clusters_touching(self):
-        pass
+        filename = 'example3.txt'
+        self.verify_largest_of_clusters_algorithm(filename)
