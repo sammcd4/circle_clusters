@@ -11,7 +11,7 @@ class Circle:
 
         self.cluster = None
         self.largest = True
-        self.largestCircle = None
+        self.largest_circle = None
         self.intersecting_circles = []
 
     def __eq__(self, other):
@@ -82,12 +82,12 @@ class Circle:
             # circles of different radius
             if circle2.r > self.r:
                 self.largest = False
-                self.largestCircle = circle2
+                self.largest_circle = circle2
 
-        elif self.largestCircle is not None:
+        elif self.largest_circle is not None:
             # save on more iteration by storing largest circle and comparing to it directly
-            self.largestCircle.compare_radius(circle2)
-            circle2.compare_radius(self.largestCircle)
+            self.largest_circle.compare_radius(circle2)
+            circle2.compare_radius(self.largest_circle)
 
 
 # Class that maintains the c-tuple order and facilitates operations between circles
@@ -151,11 +151,7 @@ class CircleSet:
         return [circle.largest for circle in self.circles]
 
     def largest_of_clusters(self):
-        largest_of_clusters = []
-        for circle in self.circles:
-            if circle.largest:
-                largest_of_clusters.append(circle.c_tuple)
-        return largest_of_clusters
+        return [circle.c_tuple for circle in self.circles if circle.largest]
 
 
 # entry point to run algorithm
