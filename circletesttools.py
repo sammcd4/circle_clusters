@@ -2,7 +2,7 @@ import unittest
 from circleclusters import c_tuples_from_file, compute_largest_of_clusters
 
 
-# base testcase for circlecluster tests to handle forward and reverse data checking
+# base TestCase for circlecluster tests to handle forward and reverse data checking
 class CircleTestCase(unittest.TestCase):
 
     def verify_largest_of_clusters_algorithm_from_file(self, filename):
